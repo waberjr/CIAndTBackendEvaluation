@@ -49,4 +49,9 @@ public class SaleRepository : ISaleRepository
 
         return await query.FirstOrDefaultAsync(o=> o.Id == id, cancellationToken);
     }
+
+    public async Task UpdateAsync(Sale sale, CancellationToken cancellationToken = default)
+    {
+        await _context.SaveChangesAsync(cancellationToken);
+    }
 }

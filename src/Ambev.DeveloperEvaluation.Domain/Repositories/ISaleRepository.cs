@@ -15,4 +15,6 @@ public interface ISaleRepository
         CancellationToken cancellationToken = default);
 
     Task<Sale?> GetByIdAsync(Guid id, bool includeItems = true, CancellationToken cancellationToken = default);
+
+    Task UpdateAsync(Sale sale, CancellationToken cancellationToken = default);
 }

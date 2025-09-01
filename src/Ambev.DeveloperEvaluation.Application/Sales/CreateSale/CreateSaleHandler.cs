@@ -1,5 +1,4 @@
-﻿using Ambev.DeveloperEvaluation.Application.Users.CreateUser;
-using Ambev.DeveloperEvaluation.Domain.Entities;
+﻿using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Ambev.DeveloperEvaluation.Domain.Services;
 using AutoMapper;
@@ -14,12 +13,6 @@ public class CreateSaleHandler : IRequestHandler<CreateSaleCommand, CreateSaleRe
     private readonly IMapper _mapper;
     private readonly IQuantityDiscountService _quantityDiscountService;
 
-    /// <summary>
-    /// Initializes a new instance of CreateSaleHandler
-    /// </summary>
-    /// <param name="saleRepository">The user repository</param>
-    /// <param name="mapper">The AutoMapper instance</param>
-    /// <param name="quantityDiscountService">The quantity discount service</param>
     public CreateSaleHandler(ISaleRepository saleRepository, IMapper mapper, IQuantityDiscountService quantityDiscountService)
     {
         _saleRepository = saleRepository;
