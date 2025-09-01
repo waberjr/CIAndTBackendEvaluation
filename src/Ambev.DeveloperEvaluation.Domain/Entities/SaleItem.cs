@@ -6,7 +6,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities;
 
 public class SaleItem : BaseAuditableEntity
 {
-    public Sale Sale { get; init; }
+    public Sale Sale { get; init; } = null!;
     public Guid ProductId { get; set; }
     public int Quantity { get; private set; }
     public decimal UnitPrice { get; private set; }
@@ -21,6 +21,10 @@ public class SaleItem : BaseAuditableEntity
         ProductId = productId;
         SetUnitPrice(unitPrice, policy);
         SetQuantity(quantity, policy);
+    }
+
+    internal SaleItem()
+    {
     }
 
     public void SetQuantity(int quantity, IQuantityDiscountService policy)

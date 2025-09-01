@@ -10,7 +10,6 @@ public class QuantityDiscountService : IQuantityDiscountService
         {
             < 4 => 0,
             < 10 => 10,
-            <= 20 => 20,
             _ => 20
         };
     }

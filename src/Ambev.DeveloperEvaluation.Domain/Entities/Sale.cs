@@ -11,7 +11,7 @@ public class Sale : BaseAuditableEntity
     public decimal TotalAmount { get; private set; }
     public Guid BranchId { get; set; }
     public bool IsCanceled { get; private set; }
-    public List<SaleItem> Items { get; } = new();
+    public List<SaleItem> Items { get; } = [];
 
     public SaleItem AddOrIncrementItem(Guid productId, int quantity, decimal unitPrice,
         IQuantityDiscountService policy)
