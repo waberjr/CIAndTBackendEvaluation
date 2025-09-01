@@ -1,4 +1,6 @@
-﻿using Ambev.DeveloperEvaluation.Domain.Entities;
+﻿using Ambev.DeveloperEvaluation.Common;
+using Ambev.DeveloperEvaluation.Common.Pagination;
+using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,13 +26,27 @@ public class SaleRepository : ISaleRepository
         return sale;
     }
 
-    public async Task<Sale?> GetByIdAsync(Guid id, bool includeItems = true, CancellationToken cancellationToken = default)
+    public async Task<PaginatedList<Sale>> GetAllAsync(
+        int pageNumber = AppConfiguration.DefaultPageNumber,
+        int pageSize = AppConfiguration.DefaultPageSize,
+        bool includeItems = true,
+        CancellationToken cancellationToken = default)
     {
-        var saleQuery = _context.Sales.AsQueryable();
+        var query = _context.Sales.AsQueryable();
 
         if (includeItems)
-            saleQuery = saleQuery.Include(s => s.Items);
+            query = query.Include(s => s.Items);
 
-        return await saleQuery.FirstOrDefaultAsync(o=> o.Id == id, cancellationToken);
+        return await PaginatedList<Sale>.CreateAsync(query, pageNumber, pageSize, cancellationToken);
+    }
+
+    public async Task<Sale?> GetByIdAsync(Guid id, bool includeItems = true, CancellationToken cancellationToken = default)
+    {
+        var query = _context.Sales.AsQueryable();
+
+        if (includeItems)
+            query = query.Include(s => s.Items);
+
+        return await query.FirstOrDefaultAsync(o=> o.Id == id, cancellationToken);
     }
 }

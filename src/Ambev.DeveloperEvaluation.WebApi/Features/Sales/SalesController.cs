@@ -1,8 +1,11 @@
 ﻿using Ambev.DeveloperEvaluation.Application.Sales.CreateSale;
 using Ambev.DeveloperEvaluation.Application.Sales.GetSale;
+using Ambev.DeveloperEvaluation.Application.Sales.ListSales;
+using Ambev.DeveloperEvaluation.Common.Pagination;
 using Ambev.DeveloperEvaluation.WebApi.Common;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.CreateSale;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.GetSale;
+using Ambev.DeveloperEvaluation.WebApi.Features.Sales.ListSales;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -40,6 +43,29 @@ public class SalesController : BaseController
             Message = "Sale created successfully",
             Data = _mapper.Map<CreateSaleResponse>(result)
         });
+    }
+
+    [HttpGet]
+    [ProducesResponseType(typeof(ApiResponseWithData<ListSalesResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ListSales([FromRoute] ListSalesRequest request, CancellationToken ct)
+    {
+        var validator = new ListSalesRequestValidator();
+        var validation = await validator.ValidateAsync(request, ct);
+
+        if (!validation.IsValid)
+            return BadRequest(validation.Errors);
+
+        var query = _mapper.Map<ListSalesCommand>(request);
+        var result = await _mediator.Send(query, ct);
+
+        var saleItems = _mapper.Map<List<ListSalesResponse>>(result.ToList());
+
+        var paginatedResponse = new PaginatedList<ListSalesResponse>(saleItems, result.TotalCount, result.CurrentPage,
+            result.PageSize);
+
+        return OkPaginated(paginatedResponse);
     }
 
     [HttpGet("{id}")]
