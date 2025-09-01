@@ -11,7 +11,8 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities;
 /// Represents a user in the system with authentication and profile information.
 /// This entity follows domain-driven design principles and includes business rules validation.
 /// </summary>
-public class User : BaseEntity, IUser
+// public class User : BaseEntity, IUser
+public class User : BaseAuditableEntity, IUser
 {
     /// <summary>
     /// Gets the user's full name.
@@ -49,16 +50,6 @@ public class User : BaseEntity, IUser
     /// Indicates whether the user is active, inactive, or blocked in the system.
     /// </summary>
     public UserStatus Status { get; set; }
-
-    /// <summary>
-    /// Gets the date and time when the user was created.
-    /// </summary>
-    public DateTime CreatedAt { get; set; }
-
-    /// <summary>
-    /// Gets the date and time of the last update to the user's information.
-    /// </summary>
-    public DateTime? UpdatedAt { get; set; }
 
     /// <summary>
     /// Gets the unique identifier of the user.
