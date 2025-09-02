@@ -33,9 +33,9 @@ public class UpdateItemHandler : IRequestHandler<UpdateItemCommand, UpdateItemRe
         if (sale.IsCancelled)
             throw new InvalidOperationException("Cannot update items in a cancelled sale.");
 
-        var item = sale.Items.FirstOrDefault(i => i.ProductId == command.ProductId);
+        var item = sale.Items.FirstOrDefault(i => i.Id == command.ItemId);
         if (item is null)
-            throw new KeyNotFoundException($"Item with Product ID {command.ProductId} not found in Sale ID {command.SaleId}");
+            throw new KeyNotFoundException($"Item with ID {command.ItemId} not found in Sale ID {command.SaleId}");
 
         item.SetQuantity(command.Quantity, _quantityDiscountService);
         item.SetUnitPrice(command.UnitPrice, _quantityDiscountService);

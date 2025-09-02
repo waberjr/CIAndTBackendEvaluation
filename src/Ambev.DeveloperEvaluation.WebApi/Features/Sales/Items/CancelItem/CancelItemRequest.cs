@@ -3,5 +3,5 @@
 public class CancelItemRequest
 {
     public Guid SaleId { get; set; }
-    public Guid ProductId { get; set; }
+    public Guid ItemId { get; set; }
 }

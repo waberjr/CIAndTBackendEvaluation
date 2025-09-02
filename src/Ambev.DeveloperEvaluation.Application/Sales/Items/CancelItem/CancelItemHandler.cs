@@ -33,9 +33,9 @@ public class CancelItemHandler : IRequestHandler<CancelItemCommand, CancelItemRe
         if (sale is null)
             throw new KeyNotFoundException($"Sale {cmd.SaleId} not found");
 
-        var item = sale.Items.FirstOrDefault(i => i.ProductId == cmd.ProductId);
+        var item = sale.Items.FirstOrDefault(i => i.Id == cmd.ItemId);
         if (item is null)
-            throw new KeyNotFoundException($"Item {cmd.ProductId} not found in Sale {cmd.SaleId}");
+            throw new KeyNotFoundException($"Item with ID {cmd.ItemId} not found in Sale {cmd.SaleId}");
 
         if (!item.IsCancelled)
             item.Cancel();

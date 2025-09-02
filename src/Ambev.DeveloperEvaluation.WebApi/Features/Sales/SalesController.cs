@@ -173,11 +173,11 @@ public class SalesController : BaseController
         return Ok(_mapper.Map<AddItemResponse>(result), "Item added successfully");
     }
 
-    [HttpPut("{id:guid}/items/{productId:guid}")]
+    [HttpPut("{id:guid}/items/{itemId:guid}")]
     [ProducesResponseType(typeof(ApiResponseWithData<UpdateItemResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateItem([FromRoute] Guid id, [FromRoute] Guid productId,
+    public async Task<IActionResult> UpdateItem([FromRoute] Guid id, [FromRoute] Guid itemId,
         [FromBody] UpdateItemRequest request, CancellationToken cancellationToken)
     {
         var validator = new UpdateItemRequestValidator();
@@ -187,19 +187,19 @@ public class SalesController : BaseController
 
         var command = _mapper.Map<UpdateItemCommand>(request);
         command.SaleId = id;
-        command.ProductId = productId;
+        command.ItemId = itemId;
         var result = await _mediator.Send(command, cancellationToken);
 
         return Ok(_mapper.Map<UpdateItemResponse>(result), "Item updated successfully");
     }
 
-    [HttpPost("{id:guid}/items/{productId:guid}/cancel")]
+    [HttpPost("{id:guid}/items/{itemId:guid}/cancel")]
     [ProducesResponseType(typeof(ApiResponseWithData<CancelItemResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> CancelItem([FromRoute] Guid id, [FromRoute] Guid productId, CancellationToken ct)
+    public async Task<IActionResult> CancelItem([FromRoute] Guid id, [FromRoute] Guid itemId, CancellationToken ct)
     {
-        var request = new CancelItemRequest { SaleId = id, ProductId = productId };
+        var request = new CancelItemRequest { SaleId = id, ItemId = itemId };
         var validator = new CancelItemRequestValidator();
         var validation = await validator.ValidateAsync(request, ct);
 

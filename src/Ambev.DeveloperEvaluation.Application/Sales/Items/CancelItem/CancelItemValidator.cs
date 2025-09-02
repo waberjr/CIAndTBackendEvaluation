@@ -7,6 +7,6 @@ public class CancelItemValidator : AbstractValidator<CancelItemCommand>
     public CancelItemValidator()
     {
         RuleFor(x => x.SaleId).NotEmpty();
-        RuleFor(x => x.ProductId).NotEmpty();
+        RuleFor(x => x.ItemId).NotEmpty();
     }
 }

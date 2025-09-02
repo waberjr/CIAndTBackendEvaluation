@@ -10,7 +10,7 @@ public class CancelItemRequestValidator : AbstractValidator<CancelItemRequest>
             .NotEmpty()
             .WithMessage("Sale ID is required");
 
-        RuleFor(x => x.ProductId)
+        RuleFor(x => x.ItemId)
             .NotEmpty()
             .WithMessage("Product ID is required");
     }
