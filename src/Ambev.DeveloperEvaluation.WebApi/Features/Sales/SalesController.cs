@@ -1,10 +1,12 @@
-﻿using Ambev.DeveloperEvaluation.Application.Sales.CancelSale;
+﻿using Ambev.DeveloperEvaluation.Application.Sales.AddItem;
+using Ambev.DeveloperEvaluation.Application.Sales.CancelSale;
 using Ambev.DeveloperEvaluation.Application.Sales.CreateSale;
 using Ambev.DeveloperEvaluation.Application.Sales.GetSale;
 using Ambev.DeveloperEvaluation.Application.Sales.ListSales;
 using Ambev.DeveloperEvaluation.Application.Sales.UpdateSale;
 using Ambev.DeveloperEvaluation.Common.Pagination;
 using Ambev.DeveloperEvaluation.WebApi.Common;
+using Ambev.DeveloperEvaluation.WebApi.Features.Sales.AddItem;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.CancelSale;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.CreateSale;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.GetSale;
@@ -18,14 +20,24 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales;
 
 public class SalesController : BaseController
 {
+    #region Private Fields
+
     private readonly IMediator _mediator;
     private readonly IMapper _mapper;
+
+    #endregion
+
+    #region Constructors
 
     public SalesController(IMediator mediator, IMapper mapper)
     {
         _mediator = mediator;
         _mapper = mapper;
     }
+
+    #endregion
+
+    #region Sale
 
     [HttpPost]
     [ProducesResponseType(typeof(ApiResponseWithData<CreateSaleResponse>), StatusCodes.Status201Created)]
@@ -95,7 +107,8 @@ public class SalesController : BaseController
     [ProducesResponseType(typeof(ApiResponseWithData<UpdateSaleResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateSale([FromRoute] Guid id, [FromBody] UpdateSaleRequest request, CancellationToken ct)
+    public async Task<IActionResult> UpdateSale([FromRoute] Guid id, [FromBody] UpdateSaleRequest request,
+        CancellationToken ct)
     {
         var validator = new UpdateSaleRequestValidator();
         var validation = await validator.ValidateAsync(request, ct);
@@ -132,4 +145,29 @@ public class SalesController : BaseController
 
         return Ok(_mapper.Map<CancelSaleResponse>(result), message);
     }
+
+    #endregion
+
+    #region Sale Item
+
+    [HttpPost("{id:guid}/items")]
+    [ProducesResponseType(typeof(ApiResponseWithData<AddItemResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> AddItem([FromRoute] Guid id, [FromBody] AddItemRequest request,
+        CancellationToken ct)
+    {
+        var validator = new AddItemRequestValidator();
+        var validation = await validator.ValidateAsync(request, ct);
+        if (!validation.IsValid)
+            return BadRequest(validation.Errors);
+
+        var command = _mapper.Map<AddItemCommand>(request);
+        command.SaleId = id;
+        var result = await _mediator.Send(command, ct);
+
+        return Ok(_mapper.Map<AddItemResponse>(result), "Item added successfully");
+    }
+
+    #endregion
 }

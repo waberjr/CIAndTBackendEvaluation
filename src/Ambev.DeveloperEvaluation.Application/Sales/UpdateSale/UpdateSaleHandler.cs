@@ -34,6 +34,9 @@ public class UpdateSaleHandler : IRequestHandler<UpdateSaleCommand, UpdateSaleRe
         if (existing is null)
             throw new KeyNotFoundException($"Sale with ID {command.Id} not found");
 
+        if (existing.IsCancelled)
+            throw new InvalidOperationException("Cannot update a cancelled sale.");
+
         _mapper.Map(command, existing);
 
         existing.Items.Clear();
