@@ -36,6 +36,9 @@ public class SaleItem : BaseAuditableEntity
 
         Quantity = quantity;
         Recalculate(policy);
+
+        if (DomainEvents.Any(e => e is SaleModifiedEvent)) return;
+        AddDomainEvent(new SaleModifiedEvent(Sale));
     }
 
     public void SetUnitPrice(decimal unitPrice, IQuantityDiscountService policy)
@@ -45,6 +48,9 @@ public class SaleItem : BaseAuditableEntity
 
         UnitPrice = unitPrice;
         Recalculate(policy);
+
+        if (DomainEvents.Any(e => e is SaleModifiedEvent)) return;
+        AddDomainEvent(new SaleModifiedEvent(Sale));
     }
 
     public void Cancel()

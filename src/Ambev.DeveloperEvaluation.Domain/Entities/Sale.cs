@@ -18,11 +18,6 @@ public class Sale : BaseAuditableEntity
     // public IReadOnlyCollection<SaleItem> Items => _items.AsReadOnly();
     public List<SaleItem> Items { get; } = [];
 
-    public Sale()
-    {
-        AddDomainEvent(new SaleCreatedEvent(this));
-    }
-
     public void UpdateItems(List<SaleItem> newItems, IQuantityDiscountService policy)
     {
         EnsureNotCancelled();

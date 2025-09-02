@@ -22,12 +22,12 @@ public abstract class BaseEntity : IComparable<BaseEntity>
     [NotMapped]
     public IReadOnlyCollection<BaseEvent> DomainEvents => _domainEvents.AsReadOnly();
 
-    protected void AddDomainEvent(BaseEvent domainEvent)
+    public void AddDomainEvent(BaseEvent domainEvent)
     {
         _domainEvents.Add(domainEvent);
     }
 
-    protected void RemoveDomainEvent(BaseEvent domainEvent)
+    public  void RemoveDomainEvent(BaseEvent domainEvent)
     {
         _domainEvents.Remove(domainEvent);
     }
