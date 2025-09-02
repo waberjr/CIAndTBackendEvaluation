@@ -1,6 +1,6 @@
-namespace Ambev.DeveloperEvaluation.Application.Sales.AddItem;
+namespace Ambev.DeveloperEvaluation.Application.Sales.Items.UpdateItem;
 
-public class AddItemLineResult
+public class UpdateItemLineResult
 {
     public Guid ProductId { get; set; }
     public int  Quantity { get; set; }

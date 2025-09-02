@@ -1,4 +1,5 @@
 ﻿using Ambev.DeveloperEvaluation.Common.Security;
+using Ambev.DeveloperEvaluation.Domain.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,6 +10,6 @@ public class ApplicationModuleInitializer : IModuleInitializer
     public void Initialize(WebApplicationBuilder builder)
     {
         builder.Services.AddSingleton<IPasswordHasher, BCryptPasswordHasher>();
-        builder.Services.AddScoped<Domain.Services.IQuantityDiscountService, Application.Services.QuantityDiscountService>();
+        builder.Services.AddScoped<Domain.Services.IQuantityDiscountService, QuantityDiscountService>();
     }
 }

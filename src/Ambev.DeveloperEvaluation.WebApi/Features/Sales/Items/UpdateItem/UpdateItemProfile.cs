@@ -1,7 +1,7 @@
-using Ambev.DeveloperEvaluation.Application.Sales.UpdateItem;
+using Ambev.DeveloperEvaluation.Application.Sales.Items.UpdateItem;
 using AutoMapper;
 
-namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales.UpdateItem;
+namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales.Items.UpdateItem;
 
 public class UpdateItemProfile : Profile
 {

@@ -1,6 +1,4 @@
-using Ambev.DeveloperEvaluation.Domain.Services;
-
-namespace Ambev.DeveloperEvaluation.Application.Services;
+namespace Ambev.DeveloperEvaluation.Domain.Services;
 
 public class QuantityDiscountService : IQuantityDiscountService
 {

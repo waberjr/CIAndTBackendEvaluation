@@ -1,4 +1,4 @@
-namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales.AddItem;
+namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales.Items.AddItem;
 
 public class AddItemLineResponse
 {

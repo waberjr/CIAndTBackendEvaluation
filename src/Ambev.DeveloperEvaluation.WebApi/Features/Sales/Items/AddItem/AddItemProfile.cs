@@ -1,7 +1,7 @@
-using Ambev.DeveloperEvaluation.Application.Sales.AddItem;
+using Ambev.DeveloperEvaluation.Application.Sales.Items.AddItem;
 using AutoMapper;
 
-namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales.AddItem;
+namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales.Items.AddItem;
 
 public class AddItemProfile : Profile
 {

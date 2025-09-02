@@ -4,7 +4,7 @@ using AutoMapper;
 using FluentValidation;
 using MediatR;
 
-namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateItem;
+namespace Ambev.DeveloperEvaluation.Application.Sales.Items.UpdateItem;
 
 public class UpdateItemHandler : IRequestHandler<UpdateItemCommand, UpdateItemResult?>
 {

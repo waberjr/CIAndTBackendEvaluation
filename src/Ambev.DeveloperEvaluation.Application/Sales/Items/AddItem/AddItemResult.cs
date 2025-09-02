@@ -1,4 +1,4 @@
-namespace Ambev.DeveloperEvaluation.Application.Sales.AddItem;
+namespace Ambev.DeveloperEvaluation.Application.Sales.Items.AddItem;
 
 public class AddItemResult
 {

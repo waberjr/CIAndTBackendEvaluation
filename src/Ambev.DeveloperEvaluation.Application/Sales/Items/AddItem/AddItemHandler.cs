@@ -5,7 +5,7 @@ using AutoMapper;
 using FluentValidation;
 using MediatR;
 
-namespace Ambev.DeveloperEvaluation.Application.Sales.AddItem;
+namespace Ambev.DeveloperEvaluation.Application.Sales.Items.AddItem;
 
 public class AddItemHandler : IRequestHandler<AddItemCommand, AddItemResult?>
 {

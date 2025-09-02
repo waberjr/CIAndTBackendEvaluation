@@ -1,10 +1,10 @@
 using FluentValidation;
 
-namespace Ambev.DeveloperEvaluation.Application.Sales.AddItem;
+namespace Ambev.DeveloperEvaluation.Application.Sales.Items.UpdateItem;
 
-public class AddItemCommandValidator : AbstractValidator<AddItemCommand>
+public class UpdateItemCommandValidator : AbstractValidator<UpdateItemCommand>
 {
-    public AddItemCommandValidator()
+    public UpdateItemCommandValidator()
     {
         RuleFor(x => x.SaleId).NotEmpty();
         RuleFor(x => x.ProductId).NotEmpty();

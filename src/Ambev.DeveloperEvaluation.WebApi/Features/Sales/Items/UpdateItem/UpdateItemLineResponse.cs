@@ -1,6 +1,6 @@
-namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales.AddItem;
+namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales.Items.UpdateItem;
 
-public class AddItemRequest
+public class UpdateItemLineResponse
 {
     public Guid ProductId { get; set; }
     public int Quantity { get; set; }

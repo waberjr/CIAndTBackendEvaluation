@@ -1,13 +1,13 @@
-namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales.UpdateItem;
+namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales.Items.AddItem;
 
-public class UpdateItemResponse
+public class AddItemResponse
 {
     public Guid Id { get; set; }
     public Guid SaleNumber { get; set; }
     public DateTime CreatedAt { get; set; }
     public Guid CustomerId { get; set; }
     public Guid BranchId { get; set; }
-    public List<UpdateItemLineResponse> Items { get; set; } = [];
+    public List<AddItemLineResponse> Items { get; set; } = [];
     public decimal TotalAmount { get; set; }
     public bool IsCancelled { get; set; }
 }

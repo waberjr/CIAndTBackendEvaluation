@@ -1,4 +1,4 @@
-namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales.UpdateItem;
+namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales.Items.UpdateItem;
 
 public class UpdateItemRequest
 {
