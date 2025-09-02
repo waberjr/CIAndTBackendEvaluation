@@ -1,3 +1,4 @@
+using Ambev.DeveloperEvaluation.Domain.Exceptions;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Ambev.DeveloperEvaluation.Domain.Services;
 using AutoMapper;
@@ -26,7 +27,7 @@ public class UpdateItemHandler : IRequestHandler<UpdateItemCommand, UpdateItemRe
             throw new KeyNotFoundException($"Sale with ID {command.SaleId} not found");
 
         if (sale.IsCancelled)
-            throw new InvalidOperationException("Cannot update items in a cancelled sale.");
+            throw new DomainException("Cannot update items in a cancelled sale.");
 
         var item = sale.Items.FirstOrDefault(i => i.Id == command.ItemId);
         if (item is null)

@@ -1,4 +1,5 @@
 ﻿using Ambev.DeveloperEvaluation.Domain.Entities;
+using Ambev.DeveloperEvaluation.Domain.Exceptions;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Ambev.DeveloperEvaluation.Domain.Services;
 using AutoMapper;
@@ -30,7 +31,7 @@ public class UpdateSaleHandler : IRequestHandler<UpdateSaleCommand, UpdateSaleRe
             throw new KeyNotFoundException($"Sale with ID {command.Id} not found");
 
         if (existing.IsCancelled)
-            throw new InvalidOperationException("Cannot update a cancelled sale.");
+            throw new DomainException("Cannot update a cancelled sale.");
 
         _mapper.Map(command, existing);
 
