@@ -30,7 +30,7 @@ public class AddItemHandler : IRequestHandler<AddItemCommand, AddItemResult?>
         if (!validation.IsValid)
             throw new ValidationException(validation.Errors);
 
-        var sale = await _saleRepository.GetByIdAsync(command.SaleId, includeItems: true, cancellationToken);
+        var sale = await _saleRepository.GetByIdAsync(command.SaleId, cancellationToken: cancellationToken);
         if (sale is null)
             throw new KeyNotFoundException($"Sale with ID {command.SaleId} not found");
 

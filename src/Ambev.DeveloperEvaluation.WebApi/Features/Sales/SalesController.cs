@@ -193,13 +193,13 @@ public class SalesController : BaseController
         return Ok(_mapper.Map<UpdateItemResponse>(result), "Item updated successfully");
     }
 
-    [HttpPost("{id:guid}/items/{itemId:guid}/cancel")]
+    [HttpPost("{id:guid}/items/{productId:guid}/cancel")]
     [ProducesResponseType(typeof(ApiResponseWithData<CancelItemResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> CancelItem([FromRoute] Guid id, [FromRoute] Guid itemId, CancellationToken ct)
+    public async Task<IActionResult> CancelItem([FromRoute] Guid id, [FromRoute] Guid productId, CancellationToken ct)
     {
-        var request = new CancelItemRequest { SaleId = id, ProductId = itemId };
+        var request = new CancelItemRequest { SaleId = id, ProductId = productId };
         var validator = new CancelItemRequestValidator();
         var validation = await validator.ValidateAsync(request, ct);
 
