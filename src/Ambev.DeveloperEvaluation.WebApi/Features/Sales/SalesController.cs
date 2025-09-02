@@ -3,6 +3,7 @@ using Ambev.DeveloperEvaluation.Application.Sales.CancelSale;
 using Ambev.DeveloperEvaluation.Application.Sales.CreateSale;
 using Ambev.DeveloperEvaluation.Application.Sales.GetSale;
 using Ambev.DeveloperEvaluation.Application.Sales.ListSales;
+using Ambev.DeveloperEvaluation.Application.Sales.UpdateItem;
 using Ambev.DeveloperEvaluation.Application.Sales.UpdateSale;
 using Ambev.DeveloperEvaluation.Common.Pagination;
 using Ambev.DeveloperEvaluation.WebApi.Common;
@@ -11,6 +12,7 @@ using Ambev.DeveloperEvaluation.WebApi.Features.Sales.CancelSale;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.CreateSale;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.GetSale;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.ListSales;
+using Ambev.DeveloperEvaluation.WebApi.Features.Sales.UpdateItem;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.UpdateSale;
 using AutoMapper;
 using MediatR;
@@ -167,6 +169,26 @@ public class SalesController : BaseController
         var result = await _mediator.Send(command, ct);
 
         return Ok(_mapper.Map<AddItemResponse>(result), "Item added successfully");
+    }
+
+    [HttpPut("{id:guid}/items/{productId:guid}")]
+    [ProducesResponseType(typeof(ApiResponseWithData<UpdateItemResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> UpdateItem([FromRoute] Guid id, [FromRoute] Guid productId,
+        [FromBody] UpdateItemRequest request, CancellationToken ct)
+    {
+        var validator = new UpdateItemRequestValidator();
+        var validation = await validator.ValidateAsync(request, ct);
+        if (!validation.IsValid)
+            return BadRequest(validation.Errors);
+
+        var command = _mapper.Map<UpdateItemCommand>(request);
+        command.SaleId = id;
+        command.ProductId = productId;
+        var result = await _mediator.Send(command, ct);
+
+        return Ok(_mapper.Map<UpdateItemResponse>(result), "Item updated successfully");
     }
 
     #endregion
