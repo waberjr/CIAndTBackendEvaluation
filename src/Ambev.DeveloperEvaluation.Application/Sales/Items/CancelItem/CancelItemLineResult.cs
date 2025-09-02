@@ -1,6 +1,7 @@
-﻿namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales.GetSale;
+﻿
+namespace Ambev.DeveloperEvaluation.Application.Sales.Items.CancelItem;
 
-public class GetSaleItemResponse
+public class CancelItemLineResult
 {
     public Guid Id { get; set; }
     public Guid ProductId { get; set; }

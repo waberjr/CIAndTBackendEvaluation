@@ -2,6 +2,7 @@
 using Ambev.DeveloperEvaluation.Application.Sales.CreateSale;
 using Ambev.DeveloperEvaluation.Application.Sales.GetSale;
 using Ambev.DeveloperEvaluation.Application.Sales.Items.AddItem;
+using Ambev.DeveloperEvaluation.Application.Sales.Items.CancelItem;
 using Ambev.DeveloperEvaluation.Application.Sales.Items.UpdateItem;
 using Ambev.DeveloperEvaluation.Application.Sales.ListSales;
 using Ambev.DeveloperEvaluation.Application.Sales.UpdateSale;
@@ -11,6 +12,7 @@ using Ambev.DeveloperEvaluation.WebApi.Features.Sales.CancelSale;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.CreateSale;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.GetSale;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.Items.AddItem;
+using Ambev.DeveloperEvaluation.WebApi.Features.Sales.Items.CancelItem;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.Items.UpdateItem;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.ListSales;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.UpdateSale;
@@ -44,16 +46,16 @@ public class SalesController : BaseController
     [HttpPost]
     [ProducesResponseType(typeof(ApiResponseWithData<CreateSaleResponse>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateSale([FromBody] CreateSaleRequest request, CancellationToken ct)
+    public async Task<IActionResult> CreateSale([FromBody] CreateSaleRequest request, CancellationToken cancellationToken)
     {
         var validator = new CreateSaleRequestValidator();
-        var validation = await validator.ValidateAsync(request, ct);
+        var validation = await validator.ValidateAsync(request, cancellationToken);
 
         if (!validation.IsValid)
             return BadRequest(validation.Errors);
 
         var command = _mapper.Map<CreateSaleCommand>(request);
-        var result = await _mediator.Send(command, ct);
+        var result = await _mediator.Send(command, cancellationToken);
 
         return Created(string.Empty, new ApiResponseWithData<CreateSaleResponse>
         {
@@ -67,16 +69,16 @@ public class SalesController : BaseController
     [ProducesResponseType(typeof(ApiResponseWithData<ListSalesResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> ListSales([FromRoute] ListSalesRequest request, CancellationToken ct)
+    public async Task<IActionResult> ListSales([FromRoute] ListSalesRequest request, CancellationToken cancellationToken)
     {
         var validator = new ListSalesRequestValidator();
-        var validation = await validator.ValidateAsync(request, ct);
+        var validation = await validator.ValidateAsync(request, cancellationToken);
 
         if (!validation.IsValid)
             return BadRequest(validation.Errors);
 
         var query = _mapper.Map<ListSalesCommand>(request);
-        var result = await _mediator.Send(query, ct);
+        var result = await _mediator.Send(query, cancellationToken);
 
         var saleItems = _mapper.Map<List<ListSalesResponse>>(result.ToList());
 
@@ -90,17 +92,17 @@ public class SalesController : BaseController
     [ProducesResponseType(typeof(ApiResponseWithData<GetSaleResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetSale([FromRoute] Guid id, CancellationToken ct)
+    public async Task<IActionResult> GetSale([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var request = new GetSaleRequest { Id = id };
         var validator = new GetSaleRequestValidator();
-        var validation = await validator.ValidateAsync(request, ct);
+        var validation = await validator.ValidateAsync(request, cancellationToken);
 
         if (!validation.IsValid)
             return BadRequest(validation.Errors);
 
         var query = _mapper.Map<GetSaleCommand>(request.Id);
-        var result = await _mediator.Send(query, ct);
+        var result = await _mediator.Send(query, cancellationToken);
 
         return Ok(_mapper.Map<GetSaleResponse>(result), "Sale retrieved successfully");
     }
@@ -110,17 +112,17 @@ public class SalesController : BaseController
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateSale([FromRoute] Guid id, [FromBody] UpdateSaleRequest request,
-        CancellationToken ct)
+        CancellationToken cancellationToken)
     {
         var validator = new UpdateSaleRequestValidator();
-        var validation = await validator.ValidateAsync(request, ct);
+        var validation = await validator.ValidateAsync(request, cancellationToken);
 
         if (!validation.IsValid)
             return BadRequest(validation.Errors);
 
         var command = _mapper.Map<UpdateSaleCommand>(request);
         command.Id = id;
-        var result = await _mediator.Send(command, ct);
+        var result = await _mediator.Send(command, cancellationToken);
 
         return Ok(_mapper.Map<UpdateSaleResponse>(result), "Sale updated successfully");
     }
@@ -129,17 +131,17 @@ public class SalesController : BaseController
     [ProducesResponseType(typeof(ApiResponseWithData<CancelSaleResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> CancelSale([FromRoute] Guid id, CancellationToken ct)
+    public async Task<IActionResult> CancelSale([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var request = new CancelSaleRequest { Id = id };
         var validator = new CancelSaleRequestValidator();
-        var validation = await validator.ValidateAsync(request, ct);
+        var validation = await validator.ValidateAsync(request, cancellationToken);
 
         if (!validation.IsValid)
             return BadRequest(validation.Errors);
 
         var query = _mapper.Map<CancelSaleCommand>(request.Id);
-        var result = await _mediator.Send(query, ct);
+        var result = await _mediator.Send(query, cancellationToken);
 
         var message = result.AlreadyCancelled
             ? "Sale was already cancelled"
@@ -157,38 +159,62 @@ public class SalesController : BaseController
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> AddItem([FromRoute] Guid id, [FromBody] AddItemRequest request,
-        CancellationToken ct)
+        CancellationToken cancellationToken)
     {
         var validator = new AddItemRequestValidator();
-        var validation = await validator.ValidateAsync(request, ct);
+        var validation = await validator.ValidateAsync(request, cancellationToken);
         if (!validation.IsValid)
             return BadRequest(validation.Errors);
 
         var command = _mapper.Map<AddItemCommand>(request);
         command.SaleId = id;
-        var result = await _mediator.Send(command, ct);
+        var result = await _mediator.Send(command, cancellationToken);
 
         return Ok(_mapper.Map<AddItemResponse>(result), "Item added successfully");
     }
 
     [HttpPut("{id:guid}/items/{productId:guid}")]
     [ProducesResponseType(typeof(ApiResponseWithData<UpdateItemResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status409Conflict)]
     public async Task<IActionResult> UpdateItem([FromRoute] Guid id, [FromRoute] Guid productId,
-        [FromBody] UpdateItemRequest request, CancellationToken ct)
+        [FromBody] UpdateItemRequest request, CancellationToken cancellationToken)
     {
         var validator = new UpdateItemRequestValidator();
-        var validation = await validator.ValidateAsync(request, ct);
+        var validation = await validator.ValidateAsync(request, cancellationToken);
         if (!validation.IsValid)
             return BadRequest(validation.Errors);
 
         var command = _mapper.Map<UpdateItemCommand>(request);
         command.SaleId = id;
         command.ProductId = productId;
-        var result = await _mediator.Send(command, ct);
+        var result = await _mediator.Send(command, cancellationToken);
 
         return Ok(_mapper.Map<UpdateItemResponse>(result), "Item updated successfully");
+    }
+
+    [HttpPost("{id:guid}/items/{itemId:guid}/cancel")]
+    [ProducesResponseType(typeof(ApiResponseWithData<CancelItemResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> CancelItem([FromRoute] Guid id, [FromRoute] Guid itemId, CancellationToken ct)
+    {
+        var request = new CancelItemRequest { SaleId = id, ProductId = itemId };
+        var validator = new CancelItemRequestValidator();
+        var validation = await validator.ValidateAsync(request, ct);
+
+        if (!validation.IsValid)
+            return BadRequest(validation.Errors);
+
+        var command = _mapper.Map<CancelItemCommand>(request);
+        var result = await _mediator.Send(command, ct);
+
+        return Ok(new ApiResponseWithData<CancelItemResponse>
+        {
+            Success = true,
+            Message = "Item cancelled successfully",
+            Data = _mapper.Map<CancelItemResponse>(result)
+        });
     }
 
     #endregion

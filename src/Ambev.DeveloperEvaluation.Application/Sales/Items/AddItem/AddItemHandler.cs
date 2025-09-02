@@ -25,7 +25,7 @@ public class AddItemHandler : IRequestHandler<AddItemCommand, AddItemResult?>
 
     public async Task<AddItemResult?> Handle(AddItemCommand command, CancellationToken cancellationToken)
     {
-        var validator = new AddItemCommandValidator();
+        var validator = new AddItemValidator();
         var validation = await validator.ValidateAsync(command, cancellationToken);
         if (!validation.IsValid)
             throw new ValidationException(validation.Errors);

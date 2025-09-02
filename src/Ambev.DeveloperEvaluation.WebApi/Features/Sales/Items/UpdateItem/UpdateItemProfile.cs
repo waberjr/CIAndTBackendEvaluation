@@ -10,5 +10,6 @@ public class UpdateItemProfile : Profile
         CreateMap<UpdateItemRequest, UpdateItemCommand>();
 
         CreateMap<UpdateItemResult, UpdateItemResponse>();
+        CreateMap<UpdateItemLineResult, UpdateItemLineResponse>();
     }
 }

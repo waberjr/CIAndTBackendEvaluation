@@ -3,9 +3,9 @@ using AutoMapper;
 
 namespace Ambev.DeveloperEvaluation.Application.Sales.Items.AddItem;
 
-public class AddItemApplicationProfile : Profile
+public class AddItemProfile : Profile
 {
-    public AddItemApplicationProfile()
+    public AddItemProfile()
     {
         CreateMap<Sale, AddItemResult>();
         CreateMap<SaleItem, AddItemLineResult>();
