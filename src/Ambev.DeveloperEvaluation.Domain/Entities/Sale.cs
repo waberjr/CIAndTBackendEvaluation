@@ -1,4 +1,5 @@
 using Ambev.DeveloperEvaluation.Domain.Common;
+using Ambev.DeveloperEvaluation.Domain.Events;
 using Ambev.DeveloperEvaluation.Domain.Exceptions;
 using Ambev.DeveloperEvaluation.Domain.Services;
 
@@ -11,7 +12,29 @@ public class Sale : BaseAuditableEntity
     public decimal TotalAmount { get; private set; }
     public Guid BranchId { get; set; }
     public bool IsCancelled { get; private set; }
+
+    // todo: change to IReadOnlyCollection
+    // private readonly List<SaleItem> _items = [];
+    // public IReadOnlyCollection<SaleItem> Items => _items.AsReadOnly();
     public List<SaleItem> Items { get; } = [];
+
+    public Sale()
+    {
+        AddDomainEvent(new SaleCreatedEvent(this));
+    }
+
+    public void UpdateItems(List<SaleItem> newItems, IQuantityDiscountService policy)
+    {
+        EnsureNotCancelled();
+        Items.Clear();
+
+        foreach (var saleItem in newItems)
+        {
+            AddOrIncrementItem(saleItem.ProductId, saleItem.Quantity, saleItem.UnitPrice, policy);
+        }
+
+        RecalculateTotal();
+    }
 
     public SaleItem AddOrIncrementItem(Guid productId, int quantity, decimal unitPrice,
         IQuantityDiscountService policy)
@@ -34,6 +57,9 @@ public class Sale : BaseAuditableEntity
         var item = new SaleItem(this, productId, quantity, unitPrice, policy);
         Items.Add(item);
         RecalculateTotal();
+
+        AddDomainEvent(new SaleModifiedEvent(this));
+
         return item;
     }
 
@@ -59,6 +85,8 @@ public class Sale : BaseAuditableEntity
     {
         if (IsCancelled) return;
         IsCancelled = true;
+
+        AddDomainEvent(new SaleCancelledEvent(this));
     }
 
     public void RecalculateTotal()

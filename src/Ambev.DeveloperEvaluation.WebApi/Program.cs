@@ -11,6 +11,7 @@ using Ambev.DeveloperEvaluation.WebApi.Filters;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Serilog;
 
 namespace Ambev.DeveloperEvaluation.WebApi;
@@ -26,22 +27,21 @@ public class Program
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
             builder.AddDefaultLogging();
 
-            builder.Services.AddControllers(o =>
-            {
-                o.Filters.Add<FluentValidationActionFilter>();
-            });
+            builder.Services.AddControllers(o => { o.Filters.Add<FluentValidationActionFilter>(); });
             builder.Services.AddTransient<FluentValidationActionFilter>();
             builder.Services.AddEndpointsApiExplorer();
 
             builder.AddBasicHealthChecks();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddDbContext<DefaultContext>(options =>
+            builder.Services.AddDbContext<DefaultContext>((sp, options) =>
+            {
+                options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
                 options.UseNpgsql(
                     builder.Configuration.GetConnectionString("DefaultConnection"),
                     b => b.MigrationsAssembly("Ambev.DeveloperEvaluation.ORM")
-                )
-            );
+                );
+            });
 
             builder.Services.AddJwtAuthentication(builder.Configuration);
 
@@ -72,7 +72,7 @@ public class Program
                 await app.MigrateAsync();
             }
 
-            app.UseExceptionHandler(options => {});
+            app.UseExceptionHandler(options => { });
             app.UseHttpsRedirection();
 
             app.UseAuthentication();

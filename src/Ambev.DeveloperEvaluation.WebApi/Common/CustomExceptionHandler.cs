@@ -10,10 +10,15 @@ namespace Ambev.DeveloperEvaluation.WebApi.Common;
 
 public class CustomExceptionHandler : IExceptionHandler
 {
+    private readonly IHostEnvironment _env;
+    private readonly ILogger<CustomExceptionHandler> _logger;
     private readonly Dictionary<Type, Func<HttpContext, Exception, Task>> _handlers;
 
-    public CustomExceptionHandler()
+    public CustomExceptionHandler(IHostEnvironment env, ILogger<CustomExceptionHandler> logger)
     {
+        _env = env;
+        _logger = logger;
+
         _handlers = new Dictionary<Type, Func<HttpContext, Exception, Task>>
         {
             { typeof(ValidationException), HandleValidationException },
@@ -97,7 +102,18 @@ public class CustomExceptionHandler : IExceptionHandler
 
     private Task HandleUnhandledException(HttpContext ctx, Exception ex)
     {
-        return WriteApiAsync(ctx, HttpStatusCode.InternalServerError, "An unexpected error has occurred.",
-            [new ValidationErrorDetail { Error = "Unhandled", Detail = "Internal Server Error" }]);
+        _logger.LogError(ex, "Unhandled exception. TraceId={TraceId}", ctx.TraceIdentifier);
+
+        var msg = _env.IsDevelopment()
+            ? ex.Message
+            : "An unexpected error has occurred.";
+
+        var errors = _env.IsDevelopment()
+            ? new[] { new ValidationErrorDetail { Error = ex.GetType().Name, Detail = ex.ToString() } }
+            : null;
+
+        ctx.Response.Headers["X-Trace-Id"] = ctx.TraceIdentifier;
+
+        return WriteApiAsync(ctx, HttpStatusCode.InternalServerError, msg, errors);
     }
 }

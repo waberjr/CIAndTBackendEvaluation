@@ -1,4 +1,5 @@
 using Ambev.DeveloperEvaluation.Domain.Common;
+using Ambev.DeveloperEvaluation.Domain.Events;
 using Ambev.DeveloperEvaluation.Domain.Exceptions;
 using Ambev.DeveloperEvaluation.Domain.Services;
 
@@ -50,6 +51,8 @@ public class SaleItem : BaseAuditableEntity
     {
         if (IsCancelled) return;
         IsCancelled = true;
+
+        AddDomainEvent(new SaleItemCancelledEvent(this));
     }
 
     public void Recalculate(IQuantityDiscountService policy)

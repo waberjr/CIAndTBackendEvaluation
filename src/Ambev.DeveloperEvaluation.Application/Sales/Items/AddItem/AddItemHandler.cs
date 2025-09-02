@@ -39,10 +39,7 @@ public class AddItemHandler : IRequestHandler<AddItemCommand, AddItemResult?>
         if (existing is not null)
             throw new InvalidOperationException("Item with the same ProductId already exists in the sale.");
 
-        var saleItem = new SaleItem(sale, command.ProductId, command.Quantity, command.UnitPrice,
-            _quantityDiscountService);
-
-        sale.Items.Add(saleItem);
+        sale.AddOrIncrementItem(command.ProductId, command.Quantity, command.UnitPrice, _quantityDiscountService);
 
         await _saleRepository.UpdateAsync(sale, cancellationToken);
 
