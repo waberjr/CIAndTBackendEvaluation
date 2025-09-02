@@ -22,7 +22,7 @@ public class CreateUserHandler : IRequestHandler<CreateUserCommand, CreateUserRe
     /// </summary>
     /// <param name="userRepository">The user repository</param>
     /// <param name="mapper">The AutoMapper instance</param>
-    /// <param name="validator">The validator for CreateUserCommand</param>
+    /// <param name="passwordHasher">The password hash service</param>
     public CreateUserHandler(IUserRepository userRepository, IMapper mapper, IPasswordHasher passwordHasher)
     {
         _userRepository = userRepository;
@@ -38,12 +38,6 @@ public class CreateUserHandler : IRequestHandler<CreateUserCommand, CreateUserRe
     /// <returns>The created user details</returns>
     public async Task<CreateUserResult> Handle(CreateUserCommand command, CancellationToken cancellationToken)
     {
-        var validator = new CreateUserCommandValidator();
-        var validationResult = await validator.ValidateAsync(command, cancellationToken);
-
-        if (!validationResult.IsValid)
-            throw new ValidationException(validationResult.Errors);
-
         var existingUser = await _userRepository.GetByEmailAsync(command.Email, cancellationToken);
         if (existingUser != null)
             throw new DomainException($"User with email {command.Email} already exists");

@@ -96,7 +96,7 @@ public class CustomExceptionHandler : IExceptionHandler
     private Task HandleDomainException(HttpContext ctx, Exception ex)
     {
         var domainException = (DomainException)ex;
-        return WriteApiAsync(ctx, HttpStatusCode.BadRequest, "Houve um erro de domínio.",
+        return WriteApiAsync(ctx, HttpStatusCode.BadRequest, "Domain error occurred.",
             [new ValidationErrorDetail { Error = "DomainException", Detail = domainException.Message }]);
     }
 

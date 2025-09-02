@@ -44,12 +44,6 @@ public class UsersController : BaseController
     public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest request,
         CancellationToken cancellationToken)
     {
-        var validator = new CreateUserRequestValidator();
-        var validationResult = await validator.ValidateAsync(request, cancellationToken);
-
-        if (!validationResult.IsValid)
-            return BadRequest(validationResult.Errors);
-
         var command = _mapper.Map<CreateUserCommand>(request);
         var response = await _mediator.Send(command, cancellationToken);
 
@@ -64,22 +58,15 @@ public class UsersController : BaseController
     /// <summary>
     /// Retrieves a user by their ID
     /// </summary>
-    /// <param name="id">The unique identifier of the user</param>
+    /// <param name="request">The unique identifier of the user to delete</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>The user details if found</returns>
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(ApiResponseWithData<GetUserResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetUser([FromRoute] Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetUser([FromRoute] GetUserRequest request, CancellationToken cancellationToken)
     {
-        var request = new GetUserRequest { Id = id };
-        var validator = new GetUserRequestValidator();
-        var validationResult = await validator.ValidateAsync(request, cancellationToken);
-
-        if (!validationResult.IsValid)
-            return BadRequest(validationResult.Errors);
-
         var command = _mapper.Map<GetUserCommand>(request.Id);
         var response = await _mediator.Send(command, cancellationToken);
 
@@ -89,22 +76,15 @@ public class UsersController : BaseController
     /// <summary>
     /// Deletes a user by their ID
     /// </summary>
-    /// <param name="id">The unique identifier of the user to delete</param>
+    /// <param name="request">The unique identifier of the user to delete</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Success response if the user was deleted</returns>
     [HttpDelete("{id}")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteUser([FromRoute] Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> DeleteUser([FromRoute] DeleteUserRequest request, CancellationToken cancellationToken)
     {
-        var request = new DeleteUserRequest { Id = id };
-        var validator = new DeleteUserRequestValidator();
-        var validationResult = await validator.ValidateAsync(request, cancellationToken);
-
-        if (!validationResult.IsValid)
-            return BadRequest(validationResult.Errors);
-
         var command = _mapper.Map<DeleteUserCommand>(request.Id);
         await _mediator.Send(command, cancellationToken);
 
