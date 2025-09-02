@@ -31,7 +31,8 @@ public class UpdateSaleHandler : IRequestHandler<UpdateSaleCommand, UpdateSaleRe
             throw new ValidationException(validationResult.Errors);
 
         var existing = await _saleRepository.GetByIdAsync(command.Id, includeItems: true, cancellationToken);
-        if (existing is null) return null;
+        if (existing is null)
+            throw new KeyNotFoundException($"Sale with ID {command.Id} not found");
 
         _mapper.Map(command, existing);
 

@@ -1,9 +1,11 @@
-﻿using Ambev.DeveloperEvaluation.Application.Sales.CreateSale;
+﻿using Ambev.DeveloperEvaluation.Application.Sales.CancelSale;
+using Ambev.DeveloperEvaluation.Application.Sales.CreateSale;
 using Ambev.DeveloperEvaluation.Application.Sales.GetSale;
 using Ambev.DeveloperEvaluation.Application.Sales.ListSales;
 using Ambev.DeveloperEvaluation.Application.Sales.UpdateSale;
 using Ambev.DeveloperEvaluation.Common.Pagination;
 using Ambev.DeveloperEvaluation.WebApi.Common;
+using Ambev.DeveloperEvaluation.WebApi.Features.Sales.CancelSale;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.CreateSale;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.GetSale;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.ListSales;
@@ -70,7 +72,7 @@ public class SalesController : BaseController
         return OkPaginated(paginatedResponse);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(ApiResponseWithData<GetSaleResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
@@ -86,12 +88,7 @@ public class SalesController : BaseController
         var query = _mapper.Map<GetSaleCommand>(request.Id);
         var result = await _mediator.Send(query, ct);
 
-        return Ok(new ApiResponseWithData<GetSaleResponse>
-        {
-            Success = true,
-            Message = "Sale retrieved successfully",
-            Data = _mapper.Map<GetSaleResponse>(result)
-        });
+        return Ok(_mapper.Map<GetSaleResponse>(result), "Sale retrieved successfully");
     }
 
     [HttpPut("{id:guid}")]
@@ -110,11 +107,29 @@ public class SalesController : BaseController
         command.Id = id;
         var result = await _mediator.Send(command, ct);
 
-        return Ok(new ApiResponseWithData<UpdateSaleResponse>
-        {
-            Success = true,
-            Message = "Sale updated successfully",
-            Data = _mapper.Map<UpdateSaleResponse>(result)
-        });
+        return Ok(_mapper.Map<UpdateSaleResponse>(result), "Sale updated successfully");
+    }
+
+    [HttpPost("{id:guid}/cancel")]
+    [ProducesResponseType(typeof(ApiResponseWithData<CancelSaleResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> CancelSale([FromRoute] Guid id, CancellationToken ct)
+    {
+        var request = new CancelSaleRequest { Id = id };
+        var validator = new CancelSaleRequestValidator();
+        var validation = await validator.ValidateAsync(request, ct);
+
+        if (!validation.IsValid)
+            return BadRequest(validation.Errors);
+
+        var query = _mapper.Map<CancelSaleCommand>(request.Id);
+        var result = await _mediator.Send(query, ct);
+
+        var message = result.AlreadyCancelled
+            ? "Sale was already cancelled"
+            : "Sale cancelled successfully";
+
+        return Ok(_mapper.Map<CancelSaleResponse>(result), message);
     }
 }

@@ -41,7 +41,8 @@ public class UsersController : BaseController
     [HttpPost]
     [ProducesResponseType(typeof(ApiResponseWithData<CreateUserResponse>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest request,
+        CancellationToken cancellationToken)
     {
         var validator = new CreateUserRequestValidator();
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -82,12 +83,7 @@ public class UsersController : BaseController
         var command = _mapper.Map<GetUserCommand>(request.Id);
         var response = await _mediator.Send(command, cancellationToken);
 
-        return Ok(new ApiResponseWithData<GetUserResponse>
-        {
-            Success = true,
-            Message = "User retrieved successfully",
-            Data = _mapper.Map<GetUserResponse>(response)
-        });
+        return Ok(_mapper.Map<GetUserResponse>(response), "User retrieved successfully");
     }
 
     /// <summary>

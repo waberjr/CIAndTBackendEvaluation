@@ -12,7 +12,7 @@ public class SaleItem : BaseAuditableEntity
     public decimal UnitPrice { get; private set; }
     public decimal Discount { get; private set; }
     public decimal TotalPrice { get; private set; }
-    public bool IsCanceled { get; private set; }
+    public bool IsCancelled { get; private set; }
 
     public SaleItem(Sale sale, Guid productId, int quantity, decimal unitPrice,
         IQuantityDiscountService policy)
@@ -29,7 +29,7 @@ public class SaleItem : BaseAuditableEntity
 
     public void SetQuantity(int quantity, IQuantityDiscountService policy)
     {
-        if (IsCanceled) throw new DomainException("Cannot change a canceled item.");
+        if (IsCancelled) throw new DomainException("Cannot change a cancelled item.");
         if (quantity < 1) throw new DomainException("Quantity must be at least 1.");
         if (quantity > 20) throw new DomainException("Maximum 20 identical items per product.");
 
@@ -39,7 +39,7 @@ public class SaleItem : BaseAuditableEntity
 
     public void SetUnitPrice(decimal unitPrice, IQuantityDiscountService policy)
     {
-        if (IsCanceled) throw new DomainException("Cannot change a canceled item.");
+        if (IsCancelled) throw new DomainException("Cannot change a cancelled item.");
         if (unitPrice <= 0) throw new DomainException("Unit price must be > 0.");
 
         UnitPrice = unitPrice;
@@ -48,8 +48,8 @@ public class SaleItem : BaseAuditableEntity
 
     public void Cancel()
     {
-        if (IsCanceled) return;
-        IsCanceled = true;
+        if (IsCancelled) return;
+        IsCancelled = true;
     }
 
     public void Recalculate(IQuantityDiscountService policy)

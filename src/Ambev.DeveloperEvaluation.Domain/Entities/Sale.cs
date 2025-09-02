@@ -10,15 +10,15 @@ public class Sale : BaseAuditableEntity
     public Guid CustomerId { get; set; }
     public decimal TotalAmount { get; private set; }
     public Guid BranchId { get; set; }
-    public bool IsCanceled { get; private set; }
+    public bool IsCancelled { get; private set; }
     public List<SaleItem> Items { get; } = [];
 
     public SaleItem AddOrIncrementItem(Guid productId, int quantity, decimal unitPrice,
         IQuantityDiscountService policy)
     {
-        EnsureNotCanceled();
+        EnsureNotCancelled();
 
-        var existing = Items.FirstOrDefault(i => i.ProductId == productId && !i.IsCanceled);
+        var existing = Items.FirstOrDefault(i => i.ProductId == productId && !i.IsCancelled);
         if (existing != null)
         {
             var newQty = existing.Quantity + quantity;
@@ -39,7 +39,7 @@ public class Sale : BaseAuditableEntity
 
     public void UpdateItemQuantity(Guid itemId, int newQuantity, IQuantityDiscountService policy)
     {
-        EnsureNotCanceled();
+        EnsureNotCancelled();
         var item = Items.FirstOrDefault(i => i.Id == itemId)
                    ?? throw new DomainException("Item not found.");
         item.SetQuantity(newQuantity, policy);
@@ -48,7 +48,7 @@ public class Sale : BaseAuditableEntity
 
     public void CancelItem(Guid itemId)
     {
-        EnsureNotCanceled();
+        EnsureNotCancelled();
         var item = Items.FirstOrDefault(i => i.Id == itemId)
                    ?? throw new DomainException("Item not found.");
         item.Cancel();
@@ -57,15 +57,15 @@ public class Sale : BaseAuditableEntity
 
     public void Cancel()
     {
-        if (IsCanceled) return;
-        IsCanceled = true;
+        if (IsCancelled) return;
+        IsCancelled = true;
     }
 
     public void RecalculateTotal()
-        => TotalAmount = Items.Where(i => !i.IsCanceled).Sum(i => i.TotalPrice);
+        => TotalAmount = Items.Where(i => !i.IsCancelled).Sum(i => i.TotalPrice);
 
-    private void EnsureNotCanceled()
+    private void EnsureNotCancelled()
     {
-        if (IsCanceled) throw new DomainException("Sale is canceled.");
+        if (IsCancelled) throw new DomainException("Sale is cancelled.");
     }
 }
