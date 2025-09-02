@@ -24,11 +24,6 @@ public class CancelItemHandler : IRequestHandler<CancelItemCommand, CancelItemRe
 
     public async Task<CancelItemResult?> Handle(CancelItemCommand cmd, CancellationToken ct)
     {
-        var validator = new CancelItemValidator();
-        var validation = await validator.ValidateAsync(cmd, ct);
-        if (!validation.IsValid)
-            throw new ValidationException(validation.Errors);
-
         var sale = await _saleRepository.GetByIdAsync(cmd.SaleId, includeItems: true, cancellationToken: ct);
         if (sale is null)
             throw new KeyNotFoundException($"Sale {cmd.SaleId} not found");

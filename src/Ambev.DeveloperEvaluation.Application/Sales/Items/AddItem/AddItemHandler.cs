@@ -25,11 +25,6 @@ public class AddItemHandler : IRequestHandler<AddItemCommand, AddItemResult?>
 
     public async Task<AddItemResult?> Handle(AddItemCommand command, CancellationToken cancellationToken)
     {
-        var validator = new AddItemValidator();
-        var validation = await validator.ValidateAsync(command, cancellationToken);
-        if (!validation.IsValid)
-            throw new ValidationException(validation.Errors);
-
         var sale = await _saleRepository.GetByIdAsync(command.SaleId, cancellationToken: cancellationToken);
         if (sale is null)
             throw new KeyNotFoundException($"Sale with ID {command.SaleId} not found");

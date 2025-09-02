@@ -1,6 +1,5 @@
 ﻿using Ambev.DeveloperEvaluation.Domain.Repositories;
 using AutoMapper;
-using FluentValidation;
 using MediatR;
 
 namespace Ambev.DeveloperEvaluation.Application.Sales.GetSale;
@@ -20,12 +19,6 @@ public class GetSaleHandler : IRequestHandler<GetSaleCommand, GetSaleResult>
 
     public async Task<GetSaleResult> Handle(GetSaleCommand command, CancellationToken cancellationToken)
     {
-        var validator = new GetSaleValidator();
-        var validationResult = await validator.ValidateAsync(command, cancellationToken);
-
-        if (!validationResult.IsValid)
-            throw new ValidationException(validationResult.Errors);
-
         var sale = await _saleRepository.GetByIdAsync(command.Id, cancellationToken: cancellationToken);
         if (sale == null)
             throw new KeyNotFoundException($"Sale with ID {command.Id} not found");

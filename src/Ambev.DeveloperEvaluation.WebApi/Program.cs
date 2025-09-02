@@ -6,7 +6,9 @@ using Ambev.DeveloperEvaluation.Common.Validation;
 using Ambev.DeveloperEvaluation.IoC;
 using Ambev.DeveloperEvaluation.ORM;
 using Ambev.DeveloperEvaluation.ORM.Extensions;
-using Ambev.DeveloperEvaluation.WebApi.Middleware;
+using Ambev.DeveloperEvaluation.WebApi.Common;
+using Ambev.DeveloperEvaluation.WebApi.Filters;
+using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -24,7 +26,11 @@ public class Program
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
             builder.AddDefaultLogging();
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers(o =>
+            {
+                o.Filters.Add<FluentValidationActionFilter>();
+            });
+            builder.Services.AddTransient<FluentValidationActionFilter>();
             builder.Services.AddEndpointsApiExplorer();
 
             builder.AddBasicHealthChecks();
@@ -50,11 +56,14 @@ public class Program
                     typeof(Program).Assembly
                 );
             });
+            builder.Services.AddValidatorsFromAssemblies([typeof(ApplicationLayer).Assembly, typeof(Program).Assembly]);
 
             builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
+            builder.Services.AddExceptionHandler<CustomExceptionHandler>();
+
             var app = builder.Build();
-            app.UseMiddleware<ValidationExceptionMiddleware>();
+            // app.UseMiddleware<ValidationExceptionMiddleware>();
 
             if (app.Environment.IsDevelopment())
             {
@@ -63,6 +72,7 @@ public class Program
                 await app.MigrateAsync();
             }
 
+            app.UseExceptionHandler(options => {});
             app.UseHttpsRedirection();
 
             app.UseAuthentication();

@@ -22,12 +22,6 @@ public class ListSalesHandler : IRequestHandler<ListSalesCommand, PaginatedList<
     public async Task<PaginatedList<ListSalesResult>> Handle(ListSalesCommand request,
         CancellationToken cancellationToken)
     {
-        var validator = new ListSalesValidator();
-        var validationResult = await validator.ValidateAsync(request, cancellationToken);
-
-        if (!validationResult.IsValid)
-            throw new ValidationException(validationResult.Errors);
-
         var paginatedSales = await _saleRepository.GetAllAsync(request.PageNumber, request.PageSize,
             cancellationToken: cancellationToken);
 

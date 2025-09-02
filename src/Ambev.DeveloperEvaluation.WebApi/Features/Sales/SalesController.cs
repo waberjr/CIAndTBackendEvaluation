@@ -48,12 +48,6 @@ public class SalesController : BaseController
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateSale([FromBody] CreateSaleRequest request, CancellationToken cancellationToken)
     {
-        var validator = new CreateSaleRequestValidator();
-        var validation = await validator.ValidateAsync(request, cancellationToken);
-
-        if (!validation.IsValid)
-            return BadRequest(validation.Errors);
-
         var command = _mapper.Map<CreateSaleCommand>(request);
         var result = await _mediator.Send(command, cancellationToken);
 
@@ -71,12 +65,6 @@ public class SalesController : BaseController
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ListSales([FromRoute] ListSalesRequest request, CancellationToken cancellationToken)
     {
-        var validator = new ListSalesRequestValidator();
-        var validation = await validator.ValidateAsync(request, cancellationToken);
-
-        if (!validation.IsValid)
-            return BadRequest(validation.Errors);
-
         var query = _mapper.Map<ListSalesCommand>(request);
         var result = await _mediator.Send(query, cancellationToken);
 
@@ -92,15 +80,8 @@ public class SalesController : BaseController
     [ProducesResponseType(typeof(ApiResponseWithData<GetSaleResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetSale([FromRoute] Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetSale([FromRoute] GetSaleRequest request, CancellationToken cancellationToken)
     {
-        var request = new GetSaleRequest { Id = id };
-        var validator = new GetSaleRequestValidator();
-        var validation = await validator.ValidateAsync(request, cancellationToken);
-
-        if (!validation.IsValid)
-            return BadRequest(validation.Errors);
-
         var query = _mapper.Map<GetSaleCommand>(request.Id);
         var result = await _mediator.Send(query, cancellationToken);
 
@@ -114,12 +95,6 @@ public class SalesController : BaseController
     public async Task<IActionResult> UpdateSale([FromRoute] Guid id, [FromBody] UpdateSaleRequest request,
         CancellationToken cancellationToken)
     {
-        var validator = new UpdateSaleRequestValidator();
-        var validation = await validator.ValidateAsync(request, cancellationToken);
-
-        if (!validation.IsValid)
-            return BadRequest(validation.Errors);
-
         var command = _mapper.Map<UpdateSaleCommand>(request);
         command.Id = id;
         var result = await _mediator.Send(command, cancellationToken);
@@ -131,15 +106,8 @@ public class SalesController : BaseController
     [ProducesResponseType(typeof(ApiResponseWithData<CancelSaleResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> CancelSale([FromRoute] Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> CancelSale([FromRoute] CancelSaleRequest request, CancellationToken cancellationToken)
     {
-        var request = new CancelSaleRequest { Id = id };
-        var validator = new CancelSaleRequestValidator();
-        var validation = await validator.ValidateAsync(request, cancellationToken);
-
-        if (!validation.IsValid)
-            return BadRequest(validation.Errors);
-
         var query = _mapper.Map<CancelSaleCommand>(request.Id);
         var result = await _mediator.Send(query, cancellationToken);
 
@@ -161,11 +129,6 @@ public class SalesController : BaseController
     public async Task<IActionResult> AddItem([FromRoute] Guid id, [FromBody] AddItemRequest request,
         CancellationToken cancellationToken)
     {
-        var validator = new AddItemRequestValidator();
-        var validation = await validator.ValidateAsync(request, cancellationToken);
-        if (!validation.IsValid)
-            return BadRequest(validation.Errors);
-
         var command = _mapper.Map<AddItemCommand>(request);
         command.SaleId = id;
         var result = await _mediator.Send(command, cancellationToken);
@@ -180,11 +143,6 @@ public class SalesController : BaseController
     public async Task<IActionResult> UpdateItem([FromRoute] Guid id, [FromRoute] Guid itemId,
         [FromBody] UpdateItemRequest request, CancellationToken cancellationToken)
     {
-        var validator = new UpdateItemRequestValidator();
-        var validation = await validator.ValidateAsync(request, cancellationToken);
-        if (!validation.IsValid)
-            return BadRequest(validation.Errors);
-
         var command = _mapper.Map<UpdateItemCommand>(request);
         command.SaleId = id;
         command.ItemId = itemId;
@@ -197,15 +155,8 @@ public class SalesController : BaseController
     [ProducesResponseType(typeof(ApiResponseWithData<CancelItemResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> CancelItem([FromRoute] Guid id, [FromRoute] Guid itemId, CancellationToken ct)
+    public async Task<IActionResult> CancelItem([FromRoute] CancelItemRequest request, CancellationToken ct)
     {
-        var request = new CancelItemRequest { SaleId = id, ItemId = itemId };
-        var validator = new CancelItemRequestValidator();
-        var validation = await validator.ValidateAsync(request, ct);
-
-        if (!validation.IsValid)
-            return BadRequest(validation.Errors);
-
         var command = _mapper.Map<CancelItemCommand>(request);
         var result = await _mediator.Send(command, ct);
 

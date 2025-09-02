@@ -21,11 +21,6 @@ public class UpdateItemHandler : IRequestHandler<UpdateItemCommand, UpdateItemRe
 
     public async Task<UpdateItemResult?> Handle(UpdateItemCommand command, CancellationToken cancellationToken)
     {
-        var validator = new UpdateItemValidator();
-        var validation = await validator.ValidateAsync(command, cancellationToken);
-        if (!validation.IsValid)
-            throw new ValidationException(validation.Errors);
-
         var sale = await _saleRepository.GetByIdAsync(command.SaleId, includeItems: true, cancellationToken);
         if (sale is null)
             throw new KeyNotFoundException($"Sale with ID {command.SaleId} not found");
