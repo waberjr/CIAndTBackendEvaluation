@@ -33,18 +33,10 @@ public class CancelItemHandler : IRequestHandler<CancelItemCommand, CancelItemRe
             throw new KeyNotFoundException($"Item with ID {cmd.ItemId} not found in Sale {cmd.SaleId}");
 
         if (!item.IsCancelled)
-            item.Cancel();
+        {
+            sale.CancelItem(item.Id);
+        }
 
-        // Recalcular totais ignorando itens cancelados
-        // Se você centraliza isso numa service, use-a:
-        // sale.TotalAmount = _quantityDiscountService.Apply(sale);
-        // else
-        // {
-        //     // já cancelado; ainda assim recalculamos para garantir consistência
-        // }
-        // sale.TotalAmount = sale.Items
-        //     .Where(i => !i.IsCancelled)
-        //     .Sum(i => i.Quantity * i.UnitPrice);
 
         await _saleRepository.UpdateAsync(sale, ct);
 

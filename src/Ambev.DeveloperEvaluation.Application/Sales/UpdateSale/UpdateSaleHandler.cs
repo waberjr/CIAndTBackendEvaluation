@@ -26,20 +26,23 @@ public class UpdateSaleHandler : IRequestHandler<UpdateSaleCommand, UpdateSaleRe
 
     public async Task<UpdateSaleResult?> Handle(UpdateSaleCommand command, CancellationToken cancellationToken)
     {
-        var existing = await _saleRepository.GetByIdAsync(command.Id, includeItems: true, cancellationToken);
-        if (existing is null)
+        var sale = await _saleRepository.GetByIdAsync(command.Id, includeItems: true, cancellationToken);
+        if (sale is null)
             throw new KeyNotFoundException($"Sale with ID {command.Id} not found");
 
-        if (existing.IsCancelled)
+        if (sale.IsCancelled)
             throw new DomainException("Cannot update a cancelled sale.");
 
-        _mapper.Map(command, existing);
+        sale.SaleNumber = command.SaleNumber;
+        sale.CreatedAt = command.CreatedAt;
+        sale.CustomerId = command.CustomerId;
+        sale.BranchId = command.BranchId;
 
         var newItems = _mapper.Map<List<SaleItem>>(command.Items);
-        existing.UpdateItems(newItems, _quantityDiscountService);
+        sale.UpdateItems(newItems, _quantityDiscountService);
 
-        await _saleRepository.UpdateAsync(existing, cancellationToken);
+        await _saleRepository.UpdateAsync(sale, cancellationToken);
 
-        return _mapper.Map<UpdateSaleResult>(existing);
+        return _mapper.Map<UpdateSaleResult>(sale);
     }
 }

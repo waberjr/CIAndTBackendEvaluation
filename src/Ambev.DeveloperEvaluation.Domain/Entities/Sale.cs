@@ -7,21 +7,20 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities;
 
 public class Sale : BaseAuditableEntity
 {
-    public Guid SaleNumber { get; init; }
+    public Guid SaleNumber { get; set; }
     public Guid CustomerId { get; set; }
     public decimal TotalAmount { get; private set; }
     public Guid BranchId { get; set; }
     public bool IsCancelled { get; private set; }
 
     // todo: change to IReadOnlyCollection
-    // private readonly List<SaleItem> _items = [];
-    // public IReadOnlyCollection<SaleItem> Items => _items.AsReadOnly();
-    public List<SaleItem> Items { get; } = [];
+    private readonly List<SaleItem> _items = [];
+    public IReadOnlyCollection<SaleItem> Items => _items.AsReadOnly();
 
     public void UpdateItems(List<SaleItem> newItems, IQuantityDiscountService policy)
     {
         EnsureNotCancelled();
-        Items.Clear();
+        _items.Clear();
 
         foreach (var saleItem in newItems)
         {
@@ -50,7 +49,7 @@ public class Sale : BaseAuditableEntity
         }
 
         var item = new SaleItem(this, productId, quantity, unitPrice, policy);
-        Items.Add(item);
+        _items.Add(item);
         RecalculateTotal();
 
         AddDomainEvent(new SaleModifiedEvent(this));
