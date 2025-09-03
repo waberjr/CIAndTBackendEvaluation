@@ -67,6 +67,7 @@ public class Program
 
             if (app.Environment.IsDevelopment())
             {
+                app.UseOpenApi();
                 app.UseSwagger();
                 app.UseSwaggerUI();
                 await app.MigrateAsync();
