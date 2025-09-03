@@ -1,8 +1,9 @@
-﻿using Ambev.DeveloperEvaluation.Common.Validation;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Ambev.DeveloperEvaluation.Common.Validation;
 
 namespace Ambev.DeveloperEvaluation.Domain.Common;
 
-public class BaseEntity : IComparable<BaseEntity>
+public abstract class BaseEntity : IComparable<BaseEntity>
 {
     public Guid Id { get; set; }
 
@@ -13,11 +14,26 @@ public class BaseEntity : IComparable<BaseEntity>
 
     public int CompareTo(BaseEntity? other)
     {
-        if (other == null)
-        {
-            return 1;
-        }
+        return other == null ? 1 : other.Id.CompareTo(Id);
+    }
 
-        return other!.Id.CompareTo(Id);
+    private readonly List<BaseEvent> _domainEvents = [];
+
+    [NotMapped]
+    public IReadOnlyCollection<BaseEvent> DomainEvents => _domainEvents.AsReadOnly();
+
+    public void AddDomainEvent(BaseEvent domainEvent)
+    {
+        _domainEvents.Add(domainEvent);
+    }
+
+    public  void RemoveDomainEvent(BaseEvent domainEvent)
+    {
+        _domainEvents.Remove(domainEvent);
+    }
+
+    public void ClearDomainEvents()
+    {
+        _domainEvents.Clear();
     }
 }

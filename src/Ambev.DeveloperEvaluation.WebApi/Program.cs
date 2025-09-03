@@ -5,16 +5,20 @@ using Ambev.DeveloperEvaluation.Common.Security;
 using Ambev.DeveloperEvaluation.Common.Validation;
 using Ambev.DeveloperEvaluation.IoC;
 using Ambev.DeveloperEvaluation.ORM;
-using Ambev.DeveloperEvaluation.WebApi.Middleware;
+using Ambev.DeveloperEvaluation.ORM.Extensions;
+using Ambev.DeveloperEvaluation.WebApi.Common;
+using Ambev.DeveloperEvaluation.WebApi.Filters;
+using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Serilog;
 
 namespace Ambev.DeveloperEvaluation.WebApi;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         try
         {
@@ -23,18 +27,21 @@ public class Program
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
             builder.AddDefaultLogging();
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers(o => { o.Filters.Add<FluentValidationActionFilter>(); });
+            builder.Services.AddTransient<FluentValidationActionFilter>();
             builder.Services.AddEndpointsApiExplorer();
 
             builder.AddBasicHealthChecks();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddDbContext<DefaultContext>(options =>
+            builder.Services.AddDbContext<DefaultContext>((sp, options) =>
+            {
+                options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
                 options.UseNpgsql(
                     builder.Configuration.GetConnectionString("DefaultConnection"),
                     b => b.MigrationsAssembly("Ambev.DeveloperEvaluation.ORM")
-                )
-            );
+                );
+            });
 
             builder.Services.AddJwtAuthentication(builder.Configuration);
 
@@ -49,18 +56,25 @@ public class Program
                     typeof(Program).Assembly
                 );
             });
+            builder.Services.AddValidatorsFromAssemblies([typeof(ApplicationLayer).Assembly, typeof(Program).Assembly]);
 
             builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
+            builder.Services.AddExceptionHandler<CustomExceptionHandler>();
+
             var app = builder.Build();
-            app.UseMiddleware<ValidationExceptionMiddleware>();
+            // app.UseMiddleware<ValidationExceptionMiddleware>();
 
             if (app.Environment.IsDevelopment())
             {
+                app.UseOpenApi();
                 app.UseSwagger();
                 app.UseSwaggerUI();
+                await app.MigrateAsync();
+                await app.SeedAsync();
             }
 
+            app.UseExceptionHandler(options => { });
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
@@ -69,6 +83,8 @@ public class Program
             app.UseBasicHealthChecks();
 
             app.MapControllers();
+
+            app.Map("/", () => Results.Redirect("/swagger"));
 
             app.Run();
         }

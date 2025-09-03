@@ -1,14 +1,6 @@
+using Ambev.DeveloperEvaluation.Domain.Common;
 using Ambev.DeveloperEvaluation.Domain.Entities;
 
-namespace Ambev.DeveloperEvaluation.Domain.Events
-{
-    public class UserRegisteredEvent
-    {
-        public User User { get; }
+namespace Ambev.DeveloperEvaluation.Domain.Events;
 
-        public UserRegisteredEvent(User user)
-        {
-            User = user;
-        }
-    }
-}
+public class UserRegisteredEvent(User user) : BaseEvent;

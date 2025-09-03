@@ -1,0 +1,14 @@
+using FluentValidation;
+
+namespace Ambev.DeveloperEvaluation.Application.Sales.Items.UpdateItem;
+
+public class UpdateItemValidator : AbstractValidator<UpdateItemCommand>
+{
+    public UpdateItemValidator()
+    {
+        RuleFor(x => x.SaleId).NotEmpty();
+        RuleFor(x => x.ItemId).NotEmpty();
+        RuleFor(x => x.Quantity).InclusiveBetween(1, 20);
+        RuleFor(x => x.UnitPrice).GreaterThan(0);
+    }
+}
