@@ -22,7 +22,6 @@ public class SaleRepositoryIntegrationTests : IClassFixture<SqliteDbFixture>
         // Arrange
         var sale = new Sale
         {
-            Id = Guid.NewGuid(),
             SaleNumber = Guid.NewGuid(),
             CustomerId = Guid.NewGuid(),
             BranchId = Guid.NewGuid()

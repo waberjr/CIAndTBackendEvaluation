@@ -22,7 +22,6 @@ public class SaleRepositoryCancelItemRecalculatesTotals : IClassFixture<SqliteDb
         // Arrange: cria venda com 2 itens
         var sale = new Sale
         {
-            Id = Guid.NewGuid(),
             SaleNumber = Guid.NewGuid(),
             CustomerId = Guid.NewGuid(),
             BranchId = Guid.NewGuid()
