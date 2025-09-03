@@ -239,6 +239,20 @@ dotnet test .\Ambev.DeveloperEvaluation.sln
 
 ---
 
+## Roadmap & Pending Items
+
+- [ ] Use Redis cache
+- [ ] Evaluate where MongoDB makes sense
+- [ ] Finish automated tests using xUnit
+- [ ] Add XML docs
+- [ ] Remove port **5432** exposure from Docker
+
+### Listing endpoints – implement guidance from `general-api.md`
+- [ ] Filtering
+- [ ] Sorting
+
+---
+
 ## License
 
 MIT — feel free to use and adapt.
