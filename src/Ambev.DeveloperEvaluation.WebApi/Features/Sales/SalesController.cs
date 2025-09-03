@@ -7,6 +7,7 @@ using Ambev.DeveloperEvaluation.Application.Sales.Items.UpdateItem;
 using Ambev.DeveloperEvaluation.Application.Sales.ListSales;
 using Ambev.DeveloperEvaluation.Application.Sales.UpdateSale;
 using Ambev.DeveloperEvaluation.Common.Pagination;
+using Ambev.DeveloperEvaluation.Domain.Enums;
 using Ambev.DeveloperEvaluation.WebApi.Common;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.CancelSale;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.CreateSale;
@@ -18,6 +19,7 @@ using Ambev.DeveloperEvaluation.WebApi.Features.Sales.ListSales;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.UpdateSale;
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales;
@@ -44,6 +46,7 @@ public class SalesController : BaseController
     #region Sale
 
     [HttpPost]
+    [Authorize(Roles = $"{nameof(UserRole.Customer)},{nameof(UserRole.Manager)},{nameof(UserRole.Admin)}")]
     [ProducesResponseType(typeof(ApiResponseWithData<CreateSaleResponse>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateSale([FromBody] CreateSaleRequest request, CancellationToken cancellationToken)
@@ -60,6 +63,7 @@ public class SalesController : BaseController
     }
 
     [HttpGet]
+    [Authorize(Roles = $"{nameof(UserRole.Customer)},{nameof(UserRole.Manager)},{nameof(UserRole.Admin)}")]
     [ProducesResponseType(typeof(ApiResponseWithData<ListSalesResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
@@ -77,6 +81,7 @@ public class SalesController : BaseController
     }
 
     [HttpGet("{id:guid}")]
+    [Authorize(Roles = $"{nameof(UserRole.Customer)},{nameof(UserRole.Manager)},{nameof(UserRole.Admin)}")]
     [ProducesResponseType(typeof(ApiResponseWithData<GetSaleResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
@@ -89,6 +94,7 @@ public class SalesController : BaseController
     }
 
     [HttpPut("{id:guid}")]
+    [Authorize(Roles = $"{nameof(UserRole.Customer)},{nameof(UserRole.Manager)},{nameof(UserRole.Admin)}")]
     [ProducesResponseType(typeof(ApiResponseWithData<UpdateSaleResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
@@ -103,6 +109,7 @@ public class SalesController : BaseController
     }
 
     [HttpPost("{id:guid}/cancel")]
+    [Authorize(Roles = $"{nameof(UserRole.Manager)},{nameof(UserRole.Admin)}")]
     [ProducesResponseType(typeof(ApiResponseWithData<CancelSaleResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
@@ -123,6 +130,7 @@ public class SalesController : BaseController
     #region Sale Item
 
     [HttpPost("{id:guid}/items")]
+    [Authorize(Roles = $"{nameof(UserRole.Customer)},{nameof(UserRole.Manager)},{nameof(UserRole.Admin)}")]
     [ProducesResponseType(typeof(ApiResponseWithData<AddItemResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
@@ -137,6 +145,7 @@ public class SalesController : BaseController
     }
 
     [HttpPut("{id:guid}/items/{itemId:guid}")]
+    [Authorize(Roles = $"{nameof(UserRole.Customer)},{nameof(UserRole.Manager)},{nameof(UserRole.Admin)}")]
     [ProducesResponseType(typeof(ApiResponseWithData<UpdateItemResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
@@ -152,6 +161,7 @@ public class SalesController : BaseController
     }
 
     [HttpPost("{id:guid}/items/{itemId:guid}/cancel")]
+    [Authorize(Roles = $"{nameof(UserRole.Manager)},{nameof(UserRole.Admin)}")]
     [ProducesResponseType(typeof(ApiResponseWithData<CancelItemResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
