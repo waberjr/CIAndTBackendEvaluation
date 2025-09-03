@@ -220,7 +220,7 @@ curl -X POST "https://localhost:7181/api/Sales/SALE_ID_GUID/items/ITEM_ID_GUID/c
 ## Testing
 - Run:
 ```bash
-dotnet test
+dotnet test .\Ambev.DeveloperEvaluation.sln
 ```
 
 ---
