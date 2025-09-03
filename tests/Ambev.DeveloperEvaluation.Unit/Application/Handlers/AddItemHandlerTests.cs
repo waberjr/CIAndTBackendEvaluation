@@ -17,7 +17,7 @@ public class AddItemHandlerTests
     public async Task Should_AddItem_And_RecalculateTotals()
     {
         // Arrange
-        var sale = new Sale { Id = Guid.NewGuid() };
+        var sale = new Sale();
         _repo.GetByIdAsync(sale.Id, includeItems: true, Arg.Any<CancellationToken>()).Returns(sale);
         _discounts.GetPercent(5).Returns(10);
 

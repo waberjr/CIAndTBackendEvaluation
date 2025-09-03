@@ -2,8 +2,6 @@
 
 > **Sales API** built with **DDD + Clean/Onion**, **MediatR**, **EF Core**, **FluentValidation**, **AutoMapper**, **JWT (Roles)** and **NSwag/Swagger**.
 
-![Build](https://img.shields.io/badge/build-passing-brightgreen.svg) ![Tests](https://img.shields.io/badge/tests-coverage--pending-lightgray.svg) ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-
 Default dev server: **https://localhost:7181**  
 Swagger UI: **`/swagger`**
 
