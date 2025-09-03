@@ -13,7 +13,6 @@ public class Sale : BaseAuditableEntity
     public Guid BranchId { get; set; }
     public bool IsCancelled { get; private set; }
 
-    // todo: change to IReadOnlyCollection
     private readonly List<SaleItem> _items = [];
     public IReadOnlyCollection<SaleItem> Items => _items.AsReadOnly();
 
@@ -57,14 +56,14 @@ public class Sale : BaseAuditableEntity
         return item;
     }
 
-    public void UpdateItemQuantity(Guid itemId, int newQuantity, IQuantityDiscountService policy)
-    {
-        EnsureNotCancelled();
-        var item = Items.FirstOrDefault(i => i.Id == itemId)
-                   ?? throw new DomainException("Item not found.");
-        item.SetQuantity(newQuantity, policy);
-        RecalculateTotal();
-    }
+    // public void UpdateItemQuantity(Guid itemId, int newQuantity, IQuantityDiscountService policy)
+    // {
+    //     EnsureNotCancelled();
+    //     var item = Items.FirstOrDefault(i => i.Id == itemId)
+    //                ?? throw new DomainException("Item not found.");
+    //     item.SetQuantity(newQuantity, policy);
+    //     RecalculateTotal();
+    // }
 
     public void CancelItem(Guid itemId)
     {
