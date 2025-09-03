@@ -37,7 +37,10 @@ public class SaleTests
     [Fact]
     public void CancelItem_ShouldRemoveItFromTotal()
     {
-        var sale = new Sale();
+        var sale = new Sale
+        {
+            Id = Guid.NewGuid()
+        };
         var p1 = Guid.NewGuid();
         var p2 = Guid.NewGuid();
 
@@ -45,6 +48,9 @@ public class SaleTests
         var i1 = sale.AddOrIncrementItem(p1, 4, 10m, _discounts); // discounted
         _discounts.GetPercent(1).Returns(0);
         var i2 = sale.AddOrIncrementItem(p2, 1, 20m, _discounts); // no discount
+
+        i1.Id = Guid.NewGuid();
+        i2.Id = Guid.NewGuid();
 
         var totalBefore = sale.TotalAmount;
 

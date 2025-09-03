@@ -99,6 +99,17 @@ Domain events (optional/logged): `SaleCreated`, `SaleModified`, `SaleCancelled`,
 **Main token claims**
 - `nameidentifier` (UserId), `name` (Username), `role` (Role)
 
+## Default Users (Seed Data)
+
+On startup, the application seeds three default users (if they don’t already exist).
+This is intended for development. Do not use these credentials in production.
+
+| Email | Username       | Role | Password |
+|---|----------------|---|---|
+| customer@test.com | Customer       | Customer | Password@123 |
+| manager@test.com | Manager        | Manager | Password@123 |
+| admin@test.com | Administrator  |Admin | Password@123 |
+
 ---
 
 ## Endpoints
