@@ -84,6 +84,8 @@ public class Program
 
             app.MapControllers();
 
+            app.Map("/", () => Results.Redirect("/swagger"));
+
             app.Run();
         }
         catch (Exception ex)
