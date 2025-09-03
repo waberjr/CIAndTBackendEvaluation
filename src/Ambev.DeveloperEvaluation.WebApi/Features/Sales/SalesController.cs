@@ -61,7 +61,6 @@ public class SalesController : BaseController
     }
 
     [HttpGet]
-    [Authorize]
     [ProducesResponseType(typeof(ApiResponseWithData<ListSalesResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
@@ -162,12 +161,7 @@ public class SalesController : BaseController
         var command = _mapper.Map<CancelItemCommand>(request);
         var result = await _mediator.Send(command, ct);
 
-        return Ok(new ApiResponseWithData<CancelItemResponse>
-        {
-            Success = true,
-            Message = "Item cancelled successfully",
-            Data = _mapper.Map<CancelItemResponse>(result)
-        });
+        return Ok(_mapper.Map<CancelItemResponse>(result), "Item cancelled successfully");
     }
 
     #endregion
