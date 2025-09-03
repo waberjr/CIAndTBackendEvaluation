@@ -71,9 +71,8 @@ public class Program
                 app.UseSwagger();
                 app.UseSwaggerUI();
                 await app.MigrateAsync();
+                await app.SeedAsync();
             }
-
-            await app.SeedAsync();
 
             app.UseExceptionHandler(options => { });
             app.UseHttpsRedirection();

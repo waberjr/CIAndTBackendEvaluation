@@ -55,32 +55,52 @@ public class ApplicationDbContextInitialiser(
 
     private async Task TrySeedAsync()
     {
-        await SeedAdminUser();
+        await SeedDefaultUsers();
     }
 
-    private async Task SeedAdminUser()
+    private async Task SeedDefaultUsers()
     {
         logger.LogInformation("Seeding admin user...");
 
         // todo: get from config
-        const string password = "Admin@123";
+        var customerUser = new User
+        {
+            Email = "customer@test.com",
+            Username = "Customer",
+            Status = UserStatus.Active,
+            Role = UserRole.Customer
+        };
+
+        var managerUser = new User
+        {
+            Email = "manager@test.com",
+            Username = "Manager",
+            Status = UserStatus.Active,
+            Role = UserRole.Manager
+        };
+
         var adminUser = new User
         {
-            Email = "administrator@test.com.br",
+            Email = "admin@test.com",
             Username = "Administrator",
             Status = UserStatus.Active,
             Role = UserRole.Admin
         };
 
-        var existingUser = await userRepository.GetByEmailAsync(adminUser.Email);
-        if (existingUser != null)
+        List<User> usersToAdd = [customerUser, managerUser, adminUser];
+
+        foreach (var user in usersToAdd)
         {
-            logger.LogInformation("User with email {Email} already exists. Skipping creation.", adminUser.Email);
-            return;
+            var existingUser = await userRepository.GetByEmailAsync(user.Email);
+            if (existingUser != null)
+            {
+                logger.LogInformation("User with email {Email} already exists. Skipping creation.", user.Email);
+                continue;
+            }
+
+            user.Password = passwordHasher.HashPassword("Password@123");
+
+            await userRepository.CreateAsync(user);
         }
-
-        adminUser.Password = passwordHasher.HashPassword(password);
-
-        await userRepository.CreateAsync(adminUser);
     }
 }
