@@ -2,7 +2,10 @@
 
 > **Sales API** built with **DDD + Clean/Onion**, **MediatR**, **EF Core**, **FluentValidation**, **AutoMapper**, **JWT (Roles)** and **NSwag/Swagger**.
 
-Default dev server: **https://localhost:7181**  
+Default docker-compose server: **http://localhost:8080**
+
+Default dev server: **https://localhost:7181**
+
 Swagger UI: **`/swagger`**
 
 ---
