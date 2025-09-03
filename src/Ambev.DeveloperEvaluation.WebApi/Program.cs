@@ -73,6 +73,8 @@ public class Program
                 await app.MigrateAsync();
             }
 
+            await app.SeedAsync();
+
             app.UseExceptionHandler(options => { });
             app.UseHttpsRedirection();
 
